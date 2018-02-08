@@ -1,0 +1,18 @@
+[package]
+name = "foobar"
+version = "0.1.0"
+authors = ["Andrei V <andrei@ptaxa.net>"]
+
+[lib]
+name = "foobar_rust"
+crate-type = ["staticlib"]
+
+[[bin]]
+name = "foobar_rust_bin"
+path = "src/bin.rs"
+
+[features]
+lib_feature = []
+bin_feature = []
+
+[dependencies]
