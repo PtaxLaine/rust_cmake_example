@@ -6,8 +6,21 @@ find_package(rustc "1.23" REQUIRED)
 enable_testing()
 
 project(example_cmake_rust C)
-cargo_build_binary(${CMAKE_SOURCE_DIR}/foobar release foobar_rust_bin foobar_rust_bin --features bin_feature)
-cargo_build_staticlib(${CMAKE_SOURCE_DIR}/foobar release foobar_rust_lib --features lib_feature)
+cargo_build_binary(
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/foobar
+    TARGET_MODE release
+    TARGET foobar_rust_main
+    RESULT foobar_rust_main_path
+    CARGO_ARGS --features bin_feature
+    )
+
+cargo_build_library(
+    SOURCE_DIR ${CMAKE_SOURCE_DIR}/foobar
+    TARGET_MODE release
+    TARGET_TYPE staticlib
+    RESULT foobar_rust_lib
+    CARGO_ARGS --features lib_feature
+    )
 
 add_executable(example_cmake_rust main.c)
 target_link_libraries(example_cmake_rust ${foobar_rust_lib})
@@ -18,9 +31,9 @@ else()
     target_link_libraries(example_cmake_rust pthread dl)
 endif()
 
-add_test(NAME test_all COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test_all.py $<TARGET_FILE:example_cmake_rust> ${foobar_rust_bin})
+add_test(NAME test_all COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test_all.py $<TARGET_FILE:example_cmake_rust> ${foobar_rust_main_path})
 add_custom_command(
      TARGET example_cmake_rust
      POST_BUILD 
-     COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test_all.py $<TARGET_FILE:example_cmake_rust> ${foobar_rust_bin}
+     COMMAND ${PYTHON_EXECUTABLE} ${CMAKE_SOURCE_DIR}/test_all.py $<TARGET_FILE:example_cmake_rust> ${foobar_rust_main_path}
 )

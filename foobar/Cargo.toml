@@ -8,7 +8,7 @@ name = "foobar_rust"
 crate-type = ["staticlib"]
 
 [[bin]]
-name = "foobar_rust_bin"
+name = "foobar_rust_main"
 path = "src/bin.rs"
 
 [features]
